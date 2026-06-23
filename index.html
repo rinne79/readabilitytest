@@ -6,7 +6,7 @@
   <title>Readability Tester</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Comic+Neue:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Georgia&family=Lexend:wght@100..900&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Raleway:ital,wght@0,300..900;1,300..900&family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Comic+Neue:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Lexend:wght@100..900&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Raleway:ital,wght@0,300..900;1,300..900&family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -20,7 +20,6 @@
 
     <!-- CONTROLS -->
     <section class="controls-panel">
-
       <div class="control-group">
         <label for="font-select">Font</label>
         <select id="font-select">
@@ -76,12 +75,17 @@
       </div>
 
       <button id="reset-btn" class="reset-btn">Reset to defaults</button>
-
     </section>
 
-    <!-- PREVIEW -->
-    <section class="preview-section">
+    <!-- MAIN TABS -->
+    <div class="main-tabs">
+      <button class="main-tab-btn active" data-main-tab="explore">Explore</button>
+      <button class="main-tab-btn" data-main-tab="test">&#9654; Speed Test</button>
+      <button class="main-tab-btn" data-main-tab="compare">Side-by-side</button>
+    </div>
 
+    <!-- EXPLORE TAB -->
+    <section id="tab-explore" class="tab-panel">
       <div class="example-tabs">
         <button class="tab-btn active" data-tab="fiction">Fiction</button>
         <button class="tab-btn" data-tab="news">News</button>
@@ -89,21 +93,98 @@
         <button class="tab-btn" data-tab="poetry">Poetry</button>
         <button class="tab-btn" data-tab="custom">My text</button>
       </div>
-
-      <div id="preview-area" class="preview-area">
+      <div class="preview-area">
         <div id="preview-text" class="preview-text"></div>
         <textarea id="custom-input" class="custom-input" placeholder="Paste or type your text here..."></textarea>
+      </div>
+    </section>
+
+    <!-- SPEED TEST TAB -->
+    <section id="tab-test" class="tab-panel hidden">
+
+      <!-- Step 0: ready screen -->
+      <div id="test-ready" class="test-card">
+        <div class="test-meta">
+          <span class="test-meta-label">Current font</span>
+          <span id="test-font-name" class="test-meta-value"></span>
+        </div>
+        <h2>Reading speed test</h2>
+        <p>A passage will appear when you click Start. Read at your normal pace &mdash; don&rsquo;t rush. When you&rsquo;re done, click <strong>Finished reading</strong> and answer a few quick questions.</p>
+        <div class="passage-picker">
+          <label for="passage-select">Choose a passage</label>
+          <select id="passage-select"></select>
+        </div>
+        <button id="start-test-btn" class="btn-primary">Start reading</button>
+      </div>
+
+      <!-- Step 1: reading -->
+      <div id="test-reading" class="test-card hidden">
+        <div class="test-timer-bar">
+          <span class="timer-label">Reading&hellip;</span>
+          <span id="live-timer" class="live-timer">0s</span>
+        </div>
+        <div id="test-passage" class="test-passage"></div>
+        <button id="done-reading-btn" class="btn-primary">Finished reading</button>
+      </div>
+
+      <!-- Step 2: comprehension -->
+      <div id="test-questions" class="test-card hidden">
+        <div class="wpm-flash">
+          <span class="wpm-number" id="wpm-display">—</span>
+          <span class="wpm-label">words per minute</span>
+        </div>
+        <h3>Quick check &mdash; did you follow along?</h3>
+        <div id="questions-list" class="questions-list"></div>
+        <button id="submit-answers-btn" class="btn-primary" disabled>Submit answers</button>
+      </div>
+
+      <!-- Step 3: result -->
+      <div id="test-result" class="test-card hidden">
+        <div class="result-grid">
+          <div class="result-stat">
+            <span class="result-num" id="result-wpm">—</span>
+            <span class="result-label">words / min</span>
+          </div>
+          <div class="result-stat">
+            <span class="result-num" id="result-score">—</span>
+            <span class="result-label">comprehension</span>
+          </div>
+        </div>
+        <p id="result-comment" class="result-comment"></p>
+        <div class="result-actions">
+          <button id="test-again-btn" class="btn-secondary">Test same font again</button>
+          <button id="test-next-btn" class="btn-primary">Test another font</button>
+        </div>
+      </div>
+
+      <!-- Results table -->
+      <div id="results-table-wrap" class="results-table-wrap">
+        <div class="results-table-header">
+          <h3>Your results</h3>
+          <button id="clear-results-btn" class="btn-ghost">Clear all</button>
+        </div>
+        <div id="results-empty" class="results-empty">Complete a test to see your results here.</div>
+        <table id="results-table" class="results-table hidden">
+          <thead>
+            <tr>
+              <th>Font</th>
+              <th>Size</th>
+              <th>Line H.</th>
+              <th>WPM</th>
+              <th>Comprehension</th>
+              <th>Passage</th>
+            </tr>
+          </thead>
+          <tbody id="results-tbody"></tbody>
+        </table>
       </div>
 
     </section>
 
-    <!-- SPLIT SCREEN -->
-    <section class="split-section">
-      <h2 class="split-title">Side-by-side comparison</h2>
-      <p class="split-desc">Paste your text below. Left shows default reading; right shows your chosen settings live.</p>
-
+    <!-- COMPARE TAB -->
+    <section id="tab-compare" class="tab-panel hidden">
+      <p class="split-desc">Paste your text below. Left shows a plain default; right shows your current settings live.</p>
       <textarea id="split-input" class="split-input" placeholder="Paste your text here to compare..."></textarea>
-
       <div class="split-panes">
         <div class="split-pane">
           <div class="pane-label">Default</div>
@@ -123,6 +204,7 @@
     <p>Tip: try <strong>Atkinson Hyperlegible</strong> or <strong>Lexend</strong> &mdash; both are designed to improve readability for people with visual impairments or dyslexia.</p>
   </footer>
 
+  <script src="passages.js"></script>
   <script src="app.js"></script>
 </body>
 </html>

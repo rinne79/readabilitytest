@@ -1,3 +1,4 @@
+/* ── Example texts ───────────────────────────────────────────────────────── */
 const EXAMPLES = {
   fiction: `<h2>The Old Man and the Sea</h2>
 <p>He was an old man who fished alone in a skiff in the Gulf Stream and he had gone eighty-four days now without taking a fish. In the first forty days a boy had been with him. But after forty days without a fish the boy's parents had told him that the old man was now definitely and finally <em>salao</em>, which is the worst form of unlucky, and the boy had gone at their orders in another boat which caught three good fish the first week.</p>
@@ -68,8 +69,9 @@ const DEFAULTS = {
   maxWidth: 65,
 };
 
-let state = { ...DEFAULTS, tab: 'fiction', theme: 'light' };
+let state = { ...DEFAULTS, tab: 'fiction', theme: 'light', mainTab: 'explore' };
 
+/* ── DOM refs ─────────────────────────────────────────────────────────────── */
 const previewText  = document.getElementById('preview-text');
 const customInput  = document.getElementById('custom-input');
 const splitInput   = document.getElementById('split-input');
@@ -86,8 +88,10 @@ const sliders = {
   maxWidth:      { el: document.getElementById('max-width'),      val: document.getElementById('max-width-val'),      fmt: v => Math.round(v) + 'ch' },
 };
 
+/* ── Style application ────────────────────────────────────────────────────── */
 function applyStyles() {
-  [previewText, customInput, splitCustom].forEach(el => {
+  [previewText, customInput, splitCustom, document.getElementById('test-passage')].forEach(el => {
+    if (!el) return;
     el.style.fontFamily    = state.font;
     el.style.fontSize      = state.fontSize + 'px';
     el.style.lineHeight    = state.lineHeight;
@@ -95,8 +99,15 @@ function applyStyles() {
     el.style.wordSpacing   = state.wordSpacing + 'em';
     el.style.maxWidth      = state.maxWidth + 'ch';
   });
+  document.getElementById('test-font-name').textContent = fontDisplayName(state.font);
 }
 
+function fontDisplayName(f) {
+  const m = f.match(/['"](.*?)['"]/);
+  return m ? m[1] : f.split(',')[0].trim();
+}
+
+/* ── Explore tab ──────────────────────────────────────────────────────────── */
 function renderPreview() {
   if (state.tab === 'custom') {
     previewText.style.display = 'none';
@@ -108,10 +119,10 @@ function renderPreview() {
   }
 }
 
+/* ── Compare tab ──────────────────────────────────────────────────────────── */
 function textToHtml(raw) {
   return raw.split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
 }
-
 function renderSplit() {
   const raw = splitInput.value.trim();
   const empty = '<span style="color:var(--text-muted);font-size:0.9rem">Your text will appear here.</span>';
@@ -121,14 +132,14 @@ function renderSplit() {
   splitCustom.innerHTML  = html;
 }
 
+/* ── Font tags ────────────────────────────────────────────────────────────── */
 function updateFontTags() {
   const meta = FONT_META[state.font] || { tags: [] };
   const classMap = { accessible: 'tag-accessible', serif: 'tag-serif' };
-  fontTags.innerHTML = meta.tags
-    .map(t => `<span class="tag ${classMap[t] || ''}">${t}</span>`)
-    .join('');
+  fontTags.innerHTML = meta.tags.map(t => `<span class="tag ${classMap[t] || ''}">${t}</span>`).join('');
 }
 
+/* ── Main render ──────────────────────────────────────────────────────────── */
 function render() {
   applyStyles();
   renderPreview();
@@ -136,6 +147,7 @@ function render() {
   updateFontTags();
 }
 
+/* ── Slider wiring ────────────────────────────────────────────────────────── */
 Object.entries(sliders).forEach(([key, { el, val, fmt }]) => {
   el.value = DEFAULTS[key];
   val.textContent = fmt(DEFAULTS[key]);
@@ -153,6 +165,7 @@ fontSelect.addEventListener('change', () => {
   applyStyles();
 });
 
+/* ── Explore tabs ─────────────────────────────────────────────────────────── */
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -162,6 +175,18 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 
+/* ── Main tabs ────────────────────────────────────────────────────────────── */
+document.querySelectorAll('.main-tab-btn').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    document.querySelectorAll('.tab-panel').forEach(p => p.classList.add('hidden'));
+    document.getElementById('tab-' + btn.dataset.mainTab).classList.remove('hidden');
+    state.mainTab = btn.dataset.mainTab;
+  });
+});
+
+/* ── Theme buttons ────────────────────────────────────────────────────────── */
 document.querySelectorAll('.theme-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
@@ -174,7 +199,7 @@ document.querySelectorAll('.theme-btn').forEach(btn => {
 splitInput.addEventListener('input', renderSplit);
 
 document.getElementById('reset-btn').addEventListener('click', () => {
-  state = { ...DEFAULTS, tab: state.tab, theme: state.theme };
+  state = { ...DEFAULTS, tab: state.tab, theme: state.theme, mainTab: state.mainTab };
   fontSelect.value = DEFAULTS.font;
   Object.entries(sliders).forEach(([key, { el, val, fmt }]) => {
     el.value = DEFAULTS[key];
@@ -183,4 +208,219 @@ document.getElementById('reset-btn').addEventListener('click', () => {
   render();
 });
 
+/* ════════════════════════════════════════════════════════════════════════════
+   SPEED TEST
+════════════════════════════════════════════════════════════════════════════ */
+
+let testState = {
+  passage: null,
+  startTime: null,
+  elapsed: null,
+  wpm: null,
+  timerInterval: null,
+  userAnswers: {},
+};
+
+const passageSelect   = document.getElementById('passage-select');
+const testReady       = document.getElementById('test-ready');
+const testReading     = document.getElementById('test-reading');
+const testQuestions   = document.getElementById('test-questions');
+const testResult      = document.getElementById('test-result');
+const testPassage     = document.getElementById('test-passage');
+const liveTimer       = document.getElementById('live-timer');
+const wpmDisplay      = document.getElementById('wpm-display');
+const questionsList   = document.getElementById('questions-list');
+const submitAnswersBtn = document.getElementById('submit-answers-btn');
+const resultsTable    = document.getElementById('results-table');
+const resultsTbody    = document.getElementById('results-tbody');
+const resultsEmpty    = document.getElementById('results-empty');
+
+/* Populate passage dropdown */
+PASSAGES.forEach((p, i) => {
+  const opt = document.createElement('option');
+  opt.value = i;
+  opt.textContent = p.title;
+  passageSelect.appendChild(opt);
+});
+
+function showTestStep(step) {
+  [testReady, testReading, testQuestions, testResult].forEach(el => el.classList.add('hidden'));
+  step.classList.remove('hidden');
+}
+
+function startTimer() {
+  testState.startTime = Date.now();
+  testState.timerInterval = setInterval(() => {
+    const s = Math.floor((Date.now() - testState.startTime) / 1000);
+    liveTimer.textContent = s + 's';
+  }, 500);
+}
+
+function stopTimer() {
+  clearInterval(testState.timerInterval);
+  testState.elapsed = (Date.now() - testState.startTime) / 1000;
+}
+
+document.getElementById('start-test-btn').addEventListener('click', () => {
+  const idx = parseInt(passageSelect.value);
+  testState.passage = PASSAGES[idx];
+  testState.userAnswers = {};
+
+  /* Render passage with current reading settings */
+  testPassage.innerHTML = testState.passage.text
+    .split(/\n{2,}/)
+    .map(p => `<p>${p.trim()}</p>`)
+    .join('');
+  applyStyles();
+
+  showTestStep(testReading);
+  startTimer();
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+});
+
+document.getElementById('done-reading-btn').addEventListener('click', () => {
+  stopTimer();
+  const minutes = testState.elapsed / 60;
+  testState.wpm = Math.round(testState.passage.wordCount / minutes);
+  wpmDisplay.textContent = testState.wpm.toLocaleString();
+
+  renderQuestions();
+  showTestStep(testQuestions);
+});
+
+function renderQuestions() {
+  questionsList.innerHTML = '';
+  submitAnswersBtn.disabled = true;
+  testState.userAnswers = {};
+
+  testState.passage.questions.forEach((q, qi) => {
+    const block = document.createElement('div');
+    block.className = 'question-block';
+    block.innerHTML = `<p class="question-text"><strong>Q${qi + 1}.</strong> ${q.q}</p>`;
+
+    q.options.forEach((opt, oi) => {
+      const id = `q${qi}_o${oi}`;
+      const label = document.createElement('label');
+      label.className = 'option-label';
+      label.innerHTML = `<input type="radio" name="q${qi}" value="${oi}" id="${id}"> <span>${opt}</span>`;
+      label.querySelector('input').addEventListener('change', () => {
+        testState.userAnswers[qi] = oi;
+        if (Object.keys(testState.userAnswers).length === testState.passage.questions.length) {
+          submitAnswersBtn.disabled = false;
+        }
+      });
+      block.appendChild(label);
+    });
+
+    questionsList.appendChild(block);
+  });
+}
+
+submitAnswersBtn.addEventListener('click', () => {
+  const questions = testState.passage.questions;
+  let correct = 0;
+
+  /* Reveal correct / wrong per question */
+  questions.forEach((q, qi) => {
+    const userAns = testState.userAnswers[qi];
+    const isCorrect = userAns === q.answer;
+    if (isCorrect) correct++;
+
+    const block = questionsList.children[qi];
+    block.querySelectorAll('.option-label').forEach((label, oi) => {
+      label.querySelector('input').disabled = true;
+      if (oi === q.answer) label.classList.add('correct');
+      else if (oi === userAns) label.classList.add('wrong');
+    });
+  });
+
+  const score = correct + '/' + questions.length;
+  document.getElementById('result-wpm').textContent   = testState.wpm.toLocaleString();
+  document.getElementById('result-score').textContent = score;
+  document.getElementById('result-comment').textContent = resultComment(testState.wpm, correct, questions.length);
+
+  saveResult(testState.wpm, correct, questions.length);
+  showTestStep(testResult);
+  renderResultsTable();
+});
+
+function resultComment(wpm, correct, total) {
+  const pct = correct / total;
+  if (pct === 1 && wpm >= 300) return 'Excellent — fast and fully accurate. This font and spacing suits you well.';
+  if (pct === 1) return 'Perfect comprehension! Try speeding up or testing another font.';
+  if (pct >= 0.67 && wpm >= 280) return 'Good balance of speed and understanding.';
+  if (pct < 0.5) return 'Comprehension was low — you may have been reading too quickly, or this font makes it harder to concentrate.';
+  return 'Decent result. Try a different font or spacing to see if your score improves.';
+}
+
+document.getElementById('test-again-btn').addEventListener('click', () => {
+  showTestStep(testReady);
+});
+
+document.getElementById('test-next-btn').addEventListener('click', () => {
+  showTestStep(testReady);
+  /* Scroll to font selector to nudge user to change font */
+  document.getElementById('font-select').scrollIntoView({ behavior: 'smooth', block: 'center' });
+  document.getElementById('font-select').focus();
+});
+
+/* ── Results persistence ──────────────────────────────────────────────────── */
+function loadResults() {
+  try { return JSON.parse(localStorage.getItem('rt_results') || '[]'); }
+  catch { return []; }
+}
+function saveResult(wpm, correct, total) {
+  const results = loadResults();
+  results.push({
+    font: fontDisplayName(state.font),
+    fontSize: state.fontSize,
+    lineHeight: state.lineHeight,
+    wpm,
+    correct,
+    total,
+    passage: testState.passage.title,
+    ts: Date.now(),
+  });
+  localStorage.setItem('rt_results', JSON.stringify(results));
+}
+
+function renderResultsTable() {
+  const results = loadResults();
+  if (!results.length) {
+    resultsEmpty.style.display = '';
+    resultsTable.classList.add('hidden');
+    return;
+  }
+  resultsEmpty.style.display = 'none';
+  resultsTable.classList.remove('hidden');
+
+  /* Find best WPM for highlight */
+  const maxWpm = Math.max(...results.map(r => r.wpm));
+
+  resultsTbody.innerHTML = results
+    .slice()
+    .reverse()
+    .map(r => {
+      const scorePct = r.correct / r.total;
+      const scoreClass = scorePct === 1 ? 'score-perfect' : scorePct >= 0.67 ? 'score-good' : 'score-low';
+      const wpmClass = r.wpm === maxWpm ? 'wpm-best' : '';
+      return `<tr>
+        <td><strong>${r.font}</strong></td>
+        <td>${r.fontSize}px</td>
+        <td>${parseFloat(r.lineHeight).toFixed(1)}</td>
+        <td class="${wpmClass}">${r.wpm.toLocaleString()}${r.wpm === maxWpm ? ' &#9650;' : ''}</td>
+        <td class="${scoreClass}">${r.correct}/${r.total}</td>
+        <td class="passage-cell">${r.passage}</td>
+      </tr>`;
+    })
+    .join('');
+}
+
+document.getElementById('clear-results-btn').addEventListener('click', () => {
+  localStorage.removeItem('rt_results');
+  renderResultsTable();
+});
+
+/* ── Init ─────────────────────────────────────────────────────────────────── */
 render();
+renderResultsTable();
