@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Readability Tester</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Comic+Neue:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Georgia&family=Lexend:wght@100..900&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Raleway:ital,wght@0,300..900;1,300..900&family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <h1>Readability Tester</h1>
+    <p class="subtitle">Find the font and spacing that works best for you</p>
+  </header>
+
+  <main>
+
+    <!-- CONTROLS -->
+    <section class="controls-panel">
+
+      <div class="control-group">
+        <label for="font-select">Font</label>
+        <select id="font-select">
+          <option value="'Atkinson Hyperlegible', sans-serif">Atkinson Hyperlegible</option>
+          <option value="'Lexend', sans-serif">Lexend</option>
+          <option value="'Open Sans', sans-serif">Open Sans</option>
+          <option value="'Verdana', sans-serif">Verdana</option>
+          <option value="'Roboto', sans-serif">Roboto</option>
+          <option value="'Raleway', sans-serif">Raleway</option>
+          <option value="'Comic Neue', cursive">Comic Neue</option>
+          <option value="'Merriweather', serif">Merriweather</option>
+          <option value="'EB Garamond', serif">EB Garamond</option>
+          <option value="'Source Serif 4', serif">Source Serif 4</option>
+          <option value="Georgia, serif">Georgia</option>
+          <option value="Arial, sans-serif">Arial</option>
+        </select>
+        <div class="font-tags"></div>
+      </div>
+
+      <div class="control-group">
+        <label for="font-size">Font size <span id="font-size-val" class="val">18px</span></label>
+        <input type="range" id="font-size" min="12" max="36" value="18" step="1" />
+      </div>
+
+      <div class="control-group">
+        <label for="line-height">Line height <span id="line-height-val" class="val">1.60</span></label>
+        <input type="range" id="line-height" min="1" max="3" value="1.6" step="0.05" />
+      </div>
+
+      <div class="control-group">
+        <label for="letter-spacing">Letter spacing <span id="letter-spacing-val" class="val">0.00em</span></label>
+        <input type="range" id="letter-spacing" min="-0.05" max="0.3" value="0" step="0.01" />
+      </div>
+
+      <div class="control-group">
+        <label for="word-spacing">Word spacing <span id="word-spacing-val" class="val">0.00em</span></label>
+        <input type="range" id="word-spacing" min="0" max="0.5" value="0" step="0.01" />
+      </div>
+
+      <div class="control-group">
+        <label for="max-width">Column width <span id="max-width-val" class="val">65ch</span></label>
+        <input type="range" id="max-width" min="30" max="120" value="65" step="1" />
+      </div>
+
+      <div class="control-group">
+        <label>Theme</label>
+        <div class="theme-buttons">
+          <button class="theme-btn active" data-theme="light" title="Light">&#9788;</button>
+          <button class="theme-btn" data-theme="sepia" title="Sepia">&#9787;</button>
+          <button class="theme-btn" data-theme="dark" title="Dark">&#9790;</button>
+          <button class="theme-btn" data-theme="high-contrast" title="High contrast">&#9724;</button>
+        </div>
+      </div>
+
+      <button id="reset-btn" class="reset-btn">Reset to defaults</button>
+
+    </section>
+
+    <!-- PREVIEW -->
+    <section class="preview-section">
+
+      <div class="example-tabs">
+        <button class="tab-btn active" data-tab="fiction">Fiction</button>
+        <button class="tab-btn" data-tab="news">News</button>
+        <button class="tab-btn" data-tab="science">Science</button>
+        <button class="tab-btn" data-tab="poetry">Poetry</button>
+        <button class="tab-btn" data-tab="custom">My text</button>
+      </div>
+
+      <div id="preview-area" class="preview-area">
+        <div id="preview-text" class="preview-text"></div>
+        <textarea id="custom-input" class="custom-input" placeholder="Paste or type your text here..."></textarea>
+      </div>
+
+    </section>
+
+    <!-- SPLIT SCREEN -->
+    <section class="split-section">
+      <h2 class="split-title">Side-by-side comparison</h2>
+      <p class="split-desc">Paste your text below. Left shows default reading; right shows your chosen settings live.</p>
+
+      <textarea id="split-input" class="split-input" placeholder="Paste your text here to compare..."></textarea>
+
+      <div class="split-panes">
+        <div class="split-pane">
+          <div class="pane-label">Default</div>
+          <div id="split-default" class="split-text split-default-text"></div>
+        </div>
+        <div class="split-divider"></div>
+        <div class="split-pane">
+          <div class="pane-label">Your settings</div>
+          <div id="split-custom" class="split-text"></div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer>
+    <p>Tip: try <strong>Atkinson Hyperlegible</strong> or <strong>Lexend</strong> &mdash; both are designed to improve readability for people with visual impairments or dyslexia.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
