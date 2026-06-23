@@ -6,7 +6,7 @@
   <title>Readability Tester</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Comic+Neue:ital,wght@0,400;0,700;1,400&family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Lexend:wght@100..900&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Raleway:ital,wght@0,300..900;1,300..900&family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Andika:ital,wght@0,400;0,700;1,400;1,700&family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400;1,700&family=Comic+Neue:ital,wght@0,400;0,700;1,400&family=Crimson+Pro:ital,wght@0,200..900;1,200..900&family=DM+Sans:ital,opsz,wght@0,9..40,100..900;1,9..40,100..900&family=EB+Garamond:ital,wght@0,400;0,700;1,400&family=Inclusive+Sans:ital@0;1&family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&family=Lato:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Lexend:wght@100..900&family=Literata:ital,opsz,wght@0,7..72,200..900;1,7..72,200..900&family=Merriweather:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Nunito:ital,wght@0,200..900;1,200..900&family=Open+Sans:ital,wght@0,300..800;1,300..800&family=PT+Serif:ital,wght@0,400;0,700;1,400&family=Raleway:ital,wght@0,300..900;1,300..900&family=Roboto:ital,wght@0,300;0,400;0,700;1,300;1,400&family=Source+Serif+4:ital,opsz,wght@0,8..60,300..900;1,8..60,300..900&family=Spectral:ital,wght@0,300;0,400;0,700;1,300;1,400&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -23,18 +23,34 @@
       <div class="control-group">
         <label for="font-select">Font</label>
         <select id="font-select">
-          <option value="'Atkinson Hyperlegible', sans-serif">Atkinson Hyperlegible</option>
-          <option value="'Lexend', sans-serif">Lexend</option>
-          <option value="'Open Sans', sans-serif">Open Sans</option>
-          <option value="'Verdana', sans-serif">Verdana</option>
-          <option value="'Roboto', sans-serif">Roboto</option>
-          <option value="'Raleway', sans-serif">Raleway</option>
-          <option value="'Comic Neue', cursive">Comic Neue</option>
-          <option value="'Merriweather', serif">Merriweather</option>
-          <option value="'EB Garamond', serif">EB Garamond</option>
-          <option value="'Source Serif 4', serif">Source Serif 4</option>
-          <option value="Georgia, serif">Georgia</option>
-          <option value="Arial, sans-serif">Arial</option>
+          <optgroup label="Accessibility-focused">
+            <option value="'Atkinson Hyperlegible', sans-serif">Atkinson Hyperlegible</option>
+            <option value="'Lexend', sans-serif">Lexend</option>
+            <option value="'Inclusive Sans', sans-serif">Inclusive Sans</option>
+            <option value="'Andika', sans-serif">Andika</option>
+            <option value="'Comic Neue', cursive">Comic Neue</option>
+          </optgroup>
+          <optgroup label="Sans-serif">
+            <option value="'Inter', sans-serif">Inter</option>
+            <option value="'Open Sans', sans-serif">Open Sans</option>
+            <option value="'Lato', sans-serif">Lato</option>
+            <option value="'Nunito', sans-serif">Nunito</option>
+            <option value="'DM Sans', sans-serif">DM Sans</option>
+            <option value="'Raleway', sans-serif">Raleway</option>
+            <option value="'Roboto', sans-serif">Roboto</option>
+            <option value="'Verdana', sans-serif">Verdana</option>
+            <option value="Arial, sans-serif">Arial</option>
+          </optgroup>
+          <optgroup label="Serif">
+            <option value="'Literata', serif">Literata</option>
+            <option value="'Merriweather', serif">Merriweather</option>
+            <option value="'Source Serif 4', serif">Source Serif 4</option>
+            <option value="'Spectral', serif">Spectral</option>
+            <option value="'PT Serif', serif">PT Serif</option>
+            <option value="'Crimson Pro', serif">Crimson Pro</option>
+            <option value="'EB Garamond', serif">EB Garamond</option>
+            <option value="Georgia, serif">Georgia</option>
+          </optgroup>
         </select>
         <div class="font-tags"></div>
       </div>
@@ -102,7 +118,6 @@
     <!-- SPEED TEST TAB -->
     <section id="tab-test" class="tab-panel hidden">
 
-      <!-- Step 0: ready screen -->
       <div id="test-ready" class="test-card">
         <div class="test-meta">
           <span class="test-meta-label">Current font</span>
@@ -117,7 +132,6 @@
         <button id="start-test-btn" class="btn-primary">Start reading</button>
       </div>
 
-      <!-- Step 1: reading -->
       <div id="test-reading" class="test-card hidden">
         <div class="test-timer-bar">
           <span class="timer-label">Reading&hellip;</span>
@@ -127,10 +141,9 @@
         <button id="done-reading-btn" class="btn-primary">Finished reading</button>
       </div>
 
-      <!-- Step 2: comprehension -->
       <div id="test-questions" class="test-card hidden">
         <div class="wpm-flash">
-          <span class="wpm-number" id="wpm-display">—</span>
+          <span class="wpm-number" id="wpm-display">&mdash;</span>
           <span class="wpm-label">words per minute</span>
         </div>
         <h3>Quick check &mdash; did you follow along?</h3>
@@ -138,15 +151,14 @@
         <button id="submit-answers-btn" class="btn-primary" disabled>Submit answers</button>
       </div>
 
-      <!-- Step 3: result -->
       <div id="test-result" class="test-card hidden">
         <div class="result-grid">
           <div class="result-stat">
-            <span class="result-num" id="result-wpm">—</span>
+            <span class="result-num" id="result-wpm">&mdash;</span>
             <span class="result-label">words / min</span>
           </div>
           <div class="result-stat">
-            <span class="result-num" id="result-score">—</span>
+            <span class="result-num" id="result-score">&mdash;</span>
             <span class="result-label">comprehension</span>
           </div>
         </div>
@@ -157,7 +169,6 @@
         </div>
       </div>
 
-      <!-- Results table -->
       <div id="results-table-wrap" class="results-table-wrap">
         <div class="results-table-header">
           <h3>Your results</h3>

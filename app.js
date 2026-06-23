@@ -1,4 +1,3 @@
-/* ── Example texts ───────────────────────────────────────────────────────── */
 const EXAMPLES = {
   fiction: `<h2>The Old Man and the Sea</h2>
 <p>He was an old man who fished alone in a skiff in the Gulf Stream and he had gone eighty-four days now without taking a fish. In the first forty days a boy had been with him. But after forty days without a fish the boy's parents had told him that the old man was now definitely and finally <em>salao</em>, which is the worst form of unlucky, and the boy had gone at their orders in another boat which caught three good fish the first week.</p>
@@ -48,16 +47,26 @@ across the water.</p>
 const FONT_META = {
   "'Atkinson Hyperlegible', sans-serif": { tags: ['accessible'] },
   "'Lexend', sans-serif":                { tags: ['accessible'] },
-  "'Open Sans', sans-serif":             { tags: [] },
-  "'Verdana', sans-serif":               { tags: [] },
-  "'Roboto', sans-serif":                { tags: [] },
-  "'Raleway', sans-serif":               { tags: [] },
+  "'Inclusive Sans', sans-serif":        { tags: ['accessible'] },
+  "'Andika', sans-serif":               { tags: ['accessible'] },
   "'Comic Neue', cursive":               { tags: ['accessible'] },
-  "'Merriweather', serif":               { tags: ['serif'] },
-  "'EB Garamond', serif":                { tags: ['serif'] },
-  "'Source Serif 4', serif":             { tags: ['serif'] },
-  "Georgia, serif":                      { tags: ['serif'] },
+  "'Inter', sans-serif":                 { tags: [] },
+  "'Open Sans', sans-serif":             { tags: [] },
+  "'Lato', sans-serif":                  { tags: [] },
+  "'Nunito', sans-serif":                { tags: [] },
+  "'DM Sans', sans-serif":               { tags: [] },
+  "'Raleway', sans-serif":               { tags: [] },
+  "'Roboto', sans-serif":                { tags: [] },
+  "'Verdana', sans-serif":               { tags: [] },
   "Arial, sans-serif":                   { tags: [] },
+  "'Literata', serif":                   { tags: ['serif'] },
+  "'Merriweather', serif":               { tags: ['serif'] },
+  "'Source Serif 4', serif":             { tags: ['serif'] },
+  "'Spectral', serif":                   { tags: ['serif'] },
+  "'PT Serif', serif":                   { tags: ['serif'] },
+  "'Crimson Pro', serif":                { tags: ['serif'] },
+  "'EB Garamond', serif":                { tags: ['serif'] },
+  "Georgia, serif":                      { tags: ['serif'] },
 };
 
 const DEFAULTS = {
@@ -71,7 +80,6 @@ const DEFAULTS = {
 
 let state = { ...DEFAULTS, tab: 'fiction', theme: 'light', mainTab: 'explore' };
 
-/* ── DOM refs ─────────────────────────────────────────────────────────────── */
 const previewText  = document.getElementById('preview-text');
 const customInput  = document.getElementById('custom-input');
 const splitInput   = document.getElementById('split-input');
@@ -88,7 +96,6 @@ const sliders = {
   maxWidth:      { el: document.getElementById('max-width'),      val: document.getElementById('max-width-val'),      fmt: v => Math.round(v) + 'ch' },
 };
 
-/* ── Style application ────────────────────────────────────────────────────── */
 function applyStyles() {
   [previewText, customInput, splitCustom, document.getElementById('test-passage')].forEach(el => {
     if (!el) return;
@@ -107,7 +114,6 @@ function fontDisplayName(f) {
   return m ? m[1] : f.split(',')[0].trim();
 }
 
-/* ── Explore tab ──────────────────────────────────────────────────────────── */
 function renderPreview() {
   if (state.tab === 'custom') {
     previewText.style.display = 'none';
@@ -119,7 +125,6 @@ function renderPreview() {
   }
 }
 
-/* ── Compare tab ──────────────────────────────────────────────────────────── */
 function textToHtml(raw) {
   return raw.split(/\n{2,}/).map(p => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
 }
@@ -132,14 +137,12 @@ function renderSplit() {
   splitCustom.innerHTML  = html;
 }
 
-/* ── Font tags ────────────────────────────────────────────────────────────── */
 function updateFontTags() {
   const meta = FONT_META[state.font] || { tags: [] };
   const classMap = { accessible: 'tag-accessible', serif: 'tag-serif' };
   fontTags.innerHTML = meta.tags.map(t => `<span class="tag ${classMap[t] || ''}">${t}</span>`).join('');
 }
 
-/* ── Main render ──────────────────────────────────────────────────────────── */
 function render() {
   applyStyles();
   renderPreview();
@@ -147,7 +150,6 @@ function render() {
   updateFontTags();
 }
 
-/* ── Slider wiring ────────────────────────────────────────────────────────── */
 Object.entries(sliders).forEach(([key, { el, val, fmt }]) => {
   el.value = DEFAULTS[key];
   val.textContent = fmt(DEFAULTS[key]);
@@ -165,7 +167,6 @@ fontSelect.addEventListener('change', () => {
   applyStyles();
 });
 
-/* ── Explore tabs ─────────────────────────────────────────────────────────── */
 document.querySelectorAll('.tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
@@ -175,7 +176,6 @@ document.querySelectorAll('.tab-btn').forEach(btn => {
   });
 });
 
-/* ── Main tabs ────────────────────────────────────────────────────────────── */
 document.querySelectorAll('.main-tab-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.main-tab-btn').forEach(b => b.classList.remove('active'));
@@ -186,7 +186,6 @@ document.querySelectorAll('.main-tab-btn').forEach(btn => {
   });
 });
 
-/* ── Theme buttons ────────────────────────────────────────────────────────── */
 document.querySelectorAll('.theme-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     document.querySelectorAll('.theme-btn').forEach(b => b.classList.remove('active'));
@@ -208,9 +207,9 @@ document.getElementById('reset-btn').addEventListener('click', () => {
   render();
 });
 
-/* ════════════════════════════════════════════════════════════════════════════
+/* ══════════════════════════════════════════════════════════════════════════
    SPEED TEST
-════════════════════════════════════════════════════════════════════════════ */
+══════════════════════════════════════════════════════════════════════════ */
 
 let testState = {
   passage: null,
@@ -221,21 +220,20 @@ let testState = {
   userAnswers: {},
 };
 
-const passageSelect   = document.getElementById('passage-select');
-const testReady       = document.getElementById('test-ready');
-const testReading     = document.getElementById('test-reading');
-const testQuestions   = document.getElementById('test-questions');
-const testResult      = document.getElementById('test-result');
-const testPassage     = document.getElementById('test-passage');
-const liveTimer       = document.getElementById('live-timer');
-const wpmDisplay      = document.getElementById('wpm-display');
-const questionsList   = document.getElementById('questions-list');
+const passageSelect    = document.getElementById('passage-select');
+const testReady        = document.getElementById('test-ready');
+const testReading      = document.getElementById('test-reading');
+const testQuestions    = document.getElementById('test-questions');
+const testResult       = document.getElementById('test-result');
+const testPassage      = document.getElementById('test-passage');
+const liveTimer        = document.getElementById('live-timer');
+const wpmDisplay       = document.getElementById('wpm-display');
+const questionsList    = document.getElementById('questions-list');
 const submitAnswersBtn = document.getElementById('submit-answers-btn');
-const resultsTable    = document.getElementById('results-table');
-const resultsTbody    = document.getElementById('results-tbody');
-const resultsEmpty    = document.getElementById('results-empty');
+const resultsTable     = document.getElementById('results-table');
+const resultsTbody     = document.getElementById('results-tbody');
+const resultsEmpty     = document.getElementById('results-empty');
 
-/* Populate passage dropdown */
 PASSAGES.forEach((p, i) => {
   const opt = document.createElement('option');
   opt.value = i;
@@ -266,7 +264,6 @@ document.getElementById('start-test-btn').addEventListener('click', () => {
   testState.passage = PASSAGES[idx];
   testState.userAnswers = {};
 
-  /* Render passage with current reading settings */
   testPassage.innerHTML = testState.passage.text
     .split(/\n{2,}/)
     .map(p => `<p>${p.trim()}</p>`)
@@ -299,10 +296,9 @@ function renderQuestions() {
     block.innerHTML = `<p class="question-text"><strong>Q${qi + 1}.</strong> ${q.q}</p>`;
 
     q.options.forEach((opt, oi) => {
-      const id = `q${qi}_o${oi}`;
       const label = document.createElement('label');
       label.className = 'option-label';
-      label.innerHTML = `<input type="radio" name="q${qi}" value="${oi}" id="${id}"> <span>${opt}</span>`;
+      label.innerHTML = `<input type="radio" name="q${qi}" value="${oi}"> <span>${opt}</span>`;
       label.querySelector('input').addEventListener('change', () => {
         testState.userAnswers[qi] = oi;
         if (Object.keys(testState.userAnswers).length === testState.passage.questions.length) {
@@ -320,7 +316,6 @@ submitAnswersBtn.addEventListener('click', () => {
   const questions = testState.passage.questions;
   let correct = 0;
 
-  /* Reveal correct / wrong per question */
   questions.forEach((q, qi) => {
     const userAns = testState.userAnswers[qi];
     const isCorrect = userAns === q.answer;
@@ -347,28 +342,25 @@ submitAnswersBtn.addEventListener('click', () => {
 function resultComment(wpm, correct, total) {
   const pct = correct / total;
   if (pct === 1 && wpm >= 300) return 'Excellent — fast and fully accurate. This font and spacing suits you well.';
-  if (pct === 1) return 'Perfect comprehension! Try speeding up or testing another font.';
+  if (pct === 1) return 'Perfect comprehension! Try speeding up or testing another font to compare.';
   if (pct >= 0.67 && wpm >= 280) return 'Good balance of speed and understanding.';
-  if (pct < 0.5) return 'Comprehension was low — you may have been reading too quickly, or this font makes it harder to concentrate.';
+  if (pct < 0.34) return 'Comprehension was low — you may have been reading too quickly, or this font makes it harder to concentrate.';
   return 'Decent result. Try a different font or spacing to see if your score improves.';
 }
 
-document.getElementById('test-again-btn').addEventListener('click', () => {
-  showTestStep(testReady);
-});
+document.getElementById('test-again-btn').addEventListener('click', () => showTestStep(testReady));
 
 document.getElementById('test-next-btn').addEventListener('click', () => {
   showTestStep(testReady);
-  /* Scroll to font selector to nudge user to change font */
   document.getElementById('font-select').scrollIntoView({ behavior: 'smooth', block: 'center' });
   document.getElementById('font-select').focus();
 });
 
-/* ── Results persistence ──────────────────────────────────────────────────── */
 function loadResults() {
   try { return JSON.parse(localStorage.getItem('rt_results') || '[]'); }
   catch { return []; }
 }
+
 function saveResult(wpm, correct, total) {
   const results = loadResults();
   results.push({
@@ -394,16 +386,14 @@ function renderResultsTable() {
   resultsEmpty.style.display = 'none';
   resultsTable.classList.remove('hidden');
 
-  /* Find best WPM for highlight */
   const maxWpm = Math.max(...results.map(r => r.wpm));
 
   resultsTbody.innerHTML = results
-    .slice()
-    .reverse()
+    .slice().reverse()
     .map(r => {
-      const scorePct = r.correct / r.total;
-      const scoreClass = scorePct === 1 ? 'score-perfect' : scorePct >= 0.67 ? 'score-good' : 'score-low';
-      const wpmClass = r.wpm === maxWpm ? 'wpm-best' : '';
+      const pct = r.correct / r.total;
+      const scoreClass = pct === 1 ? 'score-perfect' : pct >= 0.67 ? 'score-good' : 'score-low';
+      const wpmClass   = r.wpm === maxWpm ? 'wpm-best' : '';
       return `<tr>
         <td><strong>${r.font}</strong></td>
         <td>${r.fontSize}px</td>
@@ -412,8 +402,7 @@ function renderResultsTable() {
         <td class="${scoreClass}">${r.correct}/${r.total}</td>
         <td class="passage-cell">${r.passage}</td>
       </tr>`;
-    })
-    .join('');
+    }).join('');
 }
 
 document.getElementById('clear-results-btn').addEventListener('click', () => {
@@ -421,6 +410,5 @@ document.getElementById('clear-results-btn').addEventListener('click', () => {
   renderResultsTable();
 });
 
-/* ── Init ─────────────────────────────────────────────────────────────────── */
 render();
 renderResultsTable();
